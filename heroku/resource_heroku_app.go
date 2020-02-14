@@ -451,9 +451,7 @@ func resourceHerokuAppRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	for k, v := range app.Vars {
-		if _, ok := care[k]; ok {
-			configVars[k] = v
-		}
+		configVars[k] = v
 	}
 
 	if s, ok := d.GetOk("sensitive_config_vars"); ok {
