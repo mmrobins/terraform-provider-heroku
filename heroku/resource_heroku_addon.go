@@ -120,6 +120,13 @@ func resourceHerokuAddonCreate(d *schema.ResourceData, meta interface{}) error {
 		opts.Name = &v
 	}
 
+	if v := d.Get("attachment_name").(string); v != "" {
+		AttachmentNameOpt := struct {
+			Name *string `json:"name,omitempty" url:"name,omitempty,key"`
+		}{Name: &v}
+		opts.Attachment = &AttachmentNameOpt
+	}
+
 	log.Printf("[DEBUG] Addon create configuration: %#v, %#v", app, opts)
 	a, err := client.AddOnCreate(context.TODO(), app, opts)
 	if err != nil {
@@ -192,6 +199,14 @@ func resourceHerokuAddonUpdate(d *schema.ResourceData, meta interface{}) error {
 	if d.HasChange("name") {
 		n := d.Get("name").(string)
 		opts.Name = &n
+	}
+
+	if d.HasChange("attachment_name") {
+		an := d.Get("attachment_name").(string)
+		AttachmentNameOpt := struct {
+			Name *string `json:"name,omitempty" url:"name,omitempty,key"`
+		}{Name: &an}
+		opts.Attachment = &AttachmentNameOpt
 	}
 
 	ad, updateErr := client.AddOnUpdate(context.TODO(), app, d.Id(), opts)
